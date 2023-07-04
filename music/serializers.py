@@ -11,7 +11,6 @@ class TrackSerializer(serializers.ModelSerializer):
 
 
 class AlbumSerializer(serializers.ModelSerializer):
-    id = serializers.CharField(read_only=True)
     tracks = TrackSerializer(many=True, read_only=True)
 
     def get_tracks(self, instance):
@@ -19,4 +18,4 @@ class AlbumSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Album
-        fields = ['id', 'artist', 'title', 'released_at', 'description', 'tracks']
+        fields = ['artist', 'title', 'released_at', 'description', 'tracks']
