@@ -1,66 +1,81 @@
-from django.shortcuts import render
-
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
 
 from .models import Album, Track
 from .serializers import AlbumSerializer, TrackSerializer
 
+from django.shortcuts import render, get_object_or_404
 
-from django.shortcuts import get_object_or_404
+#album
+@api_view(['GET', 'POST'])
+def album_list_create(request):
 
-
-@api_view(['GET', 'POST', 'PATCH', 'DELETE'])
-def album_list(request, album_id):
-    album = get_object_or_404(Album, id=album_id)
     if request.method == 'GET':
+        albums = Album.objects.all()
+        serializer = AlbumSerializer(albums, many=True)
+        return Response(data=serializer.data)
+    
+    if request.method == 'POST':
+        serializer = AlbumSerializer(data=request.data)
+        if serializer.is_valid(raise_exception=True):
+            serializer.save()
+            return Response(data=serializer.data)
+
+@api_view(['GET', 'PATCH', 'DELETE'])
+def album_detail_update_delete(request, album_id):
+    album = get_object_or_404(Album, id=album_id)
+
+    if request.method=='GET':
         serializer = AlbumSerializer(album)
         return Response(serializer.data)
-
-    elif request.method == 'POST':
-        serializer = AlbumSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data)
-
-    elif request.method == 'PATCH':
+    
+    elif request.method=='PATCH':
         serializer = AlbumSerializer(instance=album, data=request.data)
         if serializer.is_valid():
             serializer.save()
-            return Response(serializer.data)
-
-    elif request.method == 'DELETE':
+        return Response(serializer.data)
+    
+    elif request.method=='DELETE':
         album.delete()
         data = {
-            'deleted album': album_id
+            'deleted_album':album_id
         }
         return Response(data)
 
+#track
+@api_view(['GET', 'POST'])
+def track_list_create(request, album_id):
+    album = get_object_or_404(Album, id=album_id)
 
-@api_view(['GET', 'POST', 'PATCH', 'DELETE'])
-def track_list(request, track_id):
     if request.method == 'GET':
-        tracks = Track.objects.all()
+        tracks = Track.objects.filter(album=album)
         serializer = TrackSerializer(tracks, many=True)
-        return Response(serializer.data)
-
-    elif request.method == 'POST':
+        return Response(data=serializer.data)
+    
+    if request.method == 'POST':
         serializer = TrackSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
+        if serializer.is_valid(raise_exception=True):
+            serializer.save(album=album)
             return Response(serializer.data)
 
-    elif request.method == 'PATCH':
-        track = get_object_or_404(Track, id=track_id)
+
+@api_view(['GET', 'PATCH', 'DELETE'])
+def track_detail_update_delete(request, track_id):
+    track = get_object_or_404(Track, id=track_id)
+
+    if request.method=='GET':
+        serializer = TrackSerializer(track)
+        return Response(serializer.data)
+    
+    elif request.method=='PATCH':
         serializer = TrackSerializer(instance=track, data=request.data)
         if serializer.is_valid():
             serializer.save()
-            return Response(serializer.data)
-
-    elif request.method == 'DELETE':
-        track = get_object_or_404(Track, id=track_id)
+        return Response(serializer.data)
+    
+    elif request.method=='DELETE':
         track.delete()
         data = {
-            'deleted_track': track_id
+            'deleted_track':track_id
         }
         return Response(data)
