@@ -17,7 +17,8 @@ class Track(models.Model):
     id = models.AutoField(primary_key=True, null=False, blank=False)
     track_number = models.SmallIntegerField(null=False, blank=False)
     track_title = models.CharField(null=False, blank=False, max_length=30)
-    album = models.ManyToManyField(Album, related_name='tracks', max_length=30, blank=False)
+    album_bonus = models.ManyToManyField(Album, related_name='tracks', max_length=30, blank=False)
+    album = models.ForeignKey(Album, on_delete=models.CASCADE, null=True, blank=True, related_name='bonus')
 
     def __str__(self):
         return self.title
