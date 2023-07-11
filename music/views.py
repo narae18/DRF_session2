@@ -129,13 +129,20 @@ def find_tag(request, tag_name):
        return Response(data=serializer.data)
    
    
-@api_view(['POST'])
-def find_tag2(request, tag_name):
-    tag_name = request.data.get('tag_name')
-    f_tag = get_object_or_404(Tag, name=tag_name)
-    if request.method == 'POST':
-        # f_tag = get_object_or_404(Tag, name=tag_name)
-        albums = Album.objects.filter(tag__in=[f_tag])
-        serializer = AlbumSerializer(albums, many=True)
-        return Response(data=serializer.data)
+# @api_view(['POST'])
+# def find_tag2(request, tag_name):
 
+#     f_tag = get_object_or_404(Tag, name=tag_name)
+#     if request.method == 'POST':
+#         # f_tag = get_object_or_404(Tag, name=tag_name)
+#         albums = Album.objects.filter(tag__in=[f_tag])
+#         serializer = AlbumSerializer(albums, many=True)
+#         return Response(data=serializer.data)
+
+@api_view(['POST'])
+def find_tag2request):
+    if request.method == 'POST':
+        f_tag = request.data['tag']
+        album = Album.objects.filter(tag__name=f_tag)
+        album_serializer = AlbumSerializer(album, many=True)
+        return Response(data=album_serializer.data)

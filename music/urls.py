@@ -13,4 +13,5 @@ urlpatterns = [
     path('album/<int:album_id>',views.album_UD),
     path('track/<int:track_id>',views.track_UD),
     path('tag/<str:tag_name>',views.find_tag),
+    path('tag/<str:tag_name>', views.find_tag2),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
