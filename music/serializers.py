@@ -24,8 +24,11 @@ class AlbumSerializer(serializers.ModelSerializer):
     
     tag = serializers.SerializerMethodField()    
     def get_tag(self,instance):
-        tags = instance.tag.all()
-        return [tag.name for tag in tags] 
+        tag = instance.tag.all()
+        return [tag.name for tag in tag] 
+    
+    # tag = serializers.SerializerMethodField()
+    # def get_tag2
 
         
     image = serializers.ImageField(use_url=True, required=False)

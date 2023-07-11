@@ -25,7 +25,7 @@ class Migration(migrations.Migration):
                 ('content', models.TextField(max_length=200)),
                 ('created_at', models.DateTimeField(auto_now_add=True)),
                 ('updated_at', models.DateTimeField(auto_now=True)),
-                ('tags', models.ManyToManyField(blank=True, to='music.tag')),
+                ('tag', models.ManyToManyField(blank=True, to='music.tag')),
             ],
         ),
     ]
