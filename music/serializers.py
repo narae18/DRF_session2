@@ -12,12 +12,9 @@ class TrackSerializer(serializers.ModelSerializer):
 class AlbumSerializer(serializers.ModelSerializer):
     tracks = TrackSerializer(many=True, read_only=True)
 
-
-
     def get_tracks(self, instance):
         return instance.tracks.all()
-
-
+    
     class Meta:
         model = Album
         fields = '__all__'
@@ -27,9 +24,6 @@ class AlbumSerializer(serializers.ModelSerializer):
         tag = instance.tag.all()
         return [tag.name for tag in tag] 
     
-    # tag = serializers.SerializerMethodField()
-    # def get_tag2
-
         
     image = serializers.ImageField(use_url=True, required=False)
 

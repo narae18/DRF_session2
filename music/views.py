@@ -4,11 +4,12 @@ from rest_framework.decorators import api_view
 from .models import Album, Track, Tag
 from .serializers import AlbumSerializer, TrackSerializer, TagSerializer  
 
+
 from django.shortcuts import render, get_object_or_404
 
 
 @api_view(['GET', 'POST'])
-def albumlist(request):
+def album_list(request):
 
     if request.method == 'GET':
         albums = Album.objects.all()
@@ -83,7 +84,7 @@ def album_UD(request, album_id):
 
 
 @api_view(['GET', 'POST'])
-def tracklist(request, album_id):
+def track_list(request, album_id):
     album = get_object_or_404(Album, id=album_id)
 
     if request.method == 'GET':
@@ -122,27 +123,31 @@ def track_UD(request, track_id):
 
 @api_view(['GET'])
 def find_tag(request, tag_name):
-   f_tag = get_object_or_404(Tag, name=tag_name)
-   if request.method == 'GET':
-       albums = Album.objects.filter(tag__in = [f_tag])
-       serializer = AlbumSerializer(albums, many=True)
-       return Response(data=serializer.data)
-   
-   
-# @api_view(['POST'])
-# def find_tag2(request, tag_name):
+    f_tag = get_object_or_404(Tag, name=tag_name)
+    if request.method == 'GET':
+        albums = Album.object.filter(tag__in = [ f_tag ])
+        serializer = AlbumSerializer(albums, many =True)
 
-#     f_tag = get_object_or_404(Tag, name=tag_name)
-#     if request.method == 'POST':
-#         # f_tag = get_object_or_404(Tag, name=tag_name)
-#         albums = Album.objects.filter(tag__in=[f_tag])
-#         serializer = AlbumSerializer(albums, many=True)
-#         return Response(data=serializer.data)
+
+# @api_view('POST')
+# def find_tag2(request):
+#     if request.method =='POST':
+#         f_tag = request.data['tag']
+#         album = Album.objects.filter(tag__name=f_tag)
+#         album_serializer = AlbumSerializer(album, many=True)
+#         return Response(data=album_serializer.data)
+#     else:
+#             return Response(status=400, data={'message': 'NONE'})
+    
 
 @api_view(['POST'])
-def find_tag2request):
+def find_tag2(request, tag_name):
     if request.method == 'POST':
-        f_tag = request.data['tag']
-        album = Album.objects.filter(tag__name=f_tag)
-        album_serializer = AlbumSerializer(album, many=True)
-        return Response(data=album_serializer.data)
+        f_tag = tag_name.lower()
+        f_tag = request.data.get('tag') 
+        if f_tag:
+            albums = Album.objects.filter(tag__name=f_tag)
+            album_serializer = AlbumSerializer(albums, many=True)
+            return Response(data=album_serializer.data)
+        else:
+            return Response(status=400, data={'message': 'NONE'})
